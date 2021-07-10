@@ -18,7 +18,7 @@ struct Provider: IntentTimelineProvider {
     }
     
     func getSnapshot(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (SimpleEntry) -> ()) {
-        var request = URLRequest(url: URL(string:"https://api.themoviedb.org/3/trending/\(configuration.media.stringValue)/\(configuration.time.stringValue)?api_key=e7ce364c6f50801eadea7198179d36c8")!)
+        var request = URLRequest(url: URL(string:"https://api.themoviedb.org/3/trending/\(configuration.media.stringValue)/\(configuration.time.stringValue)?api_key=API_KEY")!)
         request.httpMethod = "GET"
         request.addValue("Mozilla/5.0 (Macintosh; Intel Mac OS X x.y; rv:42.0) Gecko/20100101 Firefox/42.0", forHTTPHeaderField: "User-Agent")
         request.addValue("application/json", forHTTPHeaderField: "Accept")
@@ -28,7 +28,7 @@ struct Provider: IntentTimelineProvider {
             .decode(type: TMDb.self, decoder: JSONDecoder())
         let publisher2 = publisher
             .flatMap {_ in
-                return self.genres(configuration.media.stringValue)
+                return self.genres(configuration.media.stringValue == "movies" ? String(configuration.media.stringValue.dropLast()) : configuration.media.stringValue)
             }
         Publishers.Zip(publisher, publisher2)
             .receive(on: DispatchQueue.main)
@@ -46,7 +46,7 @@ struct Provider: IntentTimelineProvider {
         var entries: [SimpleEntry] = []
         let currentDate = Date()
         let entryDate = Calendar.current.date(byAdding: .hour, value: 1, to: currentDate)!
-        var request = URLRequest(url: URL(string:"https://api.themoviedb.org/3/trending/\(configuration.media.stringValue)/\(configuration.time.stringValue)?api_key=e7ce364c6f50801eadea7198179d36c8")!)
+        var request = URLRequest(url: URL(string:"https://api.themoviedb.org/3/trending/\(configuration.media.stringValue)/\(configuration.time.stringValue)?api_key=API_KEY")!)
         request.httpMethod = "GET"
         request.addValue("Mozilla/5.0 (Macintosh; Intel Mac OS X x.y; rv:42.0) Gecko/20100101 Firefox/42.0", forHTTPHeaderField: "User-Agent")
         request.addValue("application/json", forHTTPHeaderField: "Accept")
@@ -73,7 +73,7 @@ struct Provider: IntentTimelineProvider {
     }
     
     func genres(_ media: String) -> AnyPublisher<Genres, Error >{
-        var request = URLRequest(url: URL(string:"https://api.themoviedb.org/3/genre/\(media)/list?api_key=e7ce364c6f50801eadea7198179d36c8")!)
+        var request = URLRequest(url: URL(string:"https://api.themoviedb.org/3/genre/\(media)/list?api_key=API_KEY")!)
         request.httpMethod = "GET"
         request.addValue("Mozilla/5.0 (Macintosh; Intel Mac OS X x.y; rv:42.0) Gecko/20100101 Firefox/42.0", forHTTPHeaderField: "User-Agent")
         request.addValue("application/json", forHTTPHeaderField: "Accept")
